@@ -36,3 +36,10 @@ def todo(request, pk):
         todo = Todo.objects.get(pk=pk)
         todo.delete()
         return Response(status=HTTP_200_OK)
+    elif request.method == 'PATCH':
+        todo = Todo.objects.get(pk=pk)
+        todo.name = request.data.get('name')
+        todo.status = request.data.get('status')
+        todo.save()
+        serializer = TodoSerializer(todo, many=False)
+        return Response(serializer.data)
