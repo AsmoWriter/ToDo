@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
 from .models import Todo
 from .serializers import TodoSerializer
@@ -24,3 +24,15 @@ def todos_list(request):
         todo = Todo.objects.create(name=name)
         serializer = TodoSerializer(todo, many=False)
         return Response(serializer.data)
+
+
+@api_view(['GET', 'DELETE', 'PATCH'])
+def todo(request, pk):
+    if request.method == 'GET':
+        todo = Todo.objects.get(pk=pk)
+        serializer = TodoSerializer(todo, many=False)
+        return Response(serializer.data)
+    elif request.method == 'DELETE':
+        todo = Todo.objects.get(pk=pk)
+        todo.delete()
+        return Response(status=HTTP_200_OK)
